@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class DbServices {
@@ -20,7 +21,10 @@ public class DbServices {
 
     //get all the book contained in database
     public List<Book> getAllBook(){
-        return accessLayer.findAll();
+        List<Book> required= accessLayer.findAll();
+        Stream<Book> streamBk= required.stream();
+        return streamBk.filter((n)->n.getTitle().startsWith("A"))
+                .toList();
     }
 
     //get book by id
@@ -38,5 +42,18 @@ public class DbServices {
     public ResponseEntity<Book> createBook(Book book){
         Book bk=accessLayer.save(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(bk);
+    }
+
+    /*to update a database already existing data two parameter are require
+     * those are id number for book to be updated and the new book info
+     * */
+    public String updateBook(Long id,Book newUpdate){
+        Book bk=accessLayer.findById(id)
+                .orElseThrow(()->new RuntimeException("book not found"));
+
+        bk.setTitle(newUpdate.getTitle());
+        bk.setAuthor(newUpdate.getAuthor());
+
+        return bk.getTitle()+" successfully updated";
     }
 }

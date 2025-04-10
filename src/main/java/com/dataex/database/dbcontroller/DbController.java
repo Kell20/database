@@ -24,8 +24,8 @@ public class DbController {
     }
 
     // get book depends on ID
-    @GetMapping("get/{id}")
-    public String getById(@PathVariable Long id){
+    @GetMapping("get")
+    public String getById(@RequestParam Long id){
         return dbServices.getByID(id);
     }
 
@@ -39,5 +39,10 @@ public class DbController {
     @PostMapping
     public ResponseEntity<Book> createBook(@RequestBody Book book){
         return dbServices.createBook(book);
+    }
+
+    @PutMapping("update")
+    public String updateBook(@RequestParam Long id,@RequestBody Book book){
+        return dbServices.updateBook(id,book);
     }
 }
